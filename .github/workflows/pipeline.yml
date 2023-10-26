@@ -15,7 +15,7 @@ on:
         type: string
         description: 'Commit SHA (Default is latest commit of main branch)'
         required: false
-        default: 'main'
+        default: ''
 
 run-name: 'Deploy ${{ inputs.deploy-branch }} @ ${{ inputs.commit }} by @${{ github.actor }}'
 
@@ -29,7 +29,7 @@ jobs:
         with:
           ref: ${{ inputs.commit }}
       - name: Check out branch main @ latest commit
-        if: ${{ inputs.commit == '' }}
+        if: ${{ inputs.commit == '' }} || ${{ inputs.commit == 'main' }}
         uses: actions/checkout@v3
         with:
           ref: main
