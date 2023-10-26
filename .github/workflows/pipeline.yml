@@ -23,13 +23,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out commit @ ${{ inputs.commit }}
-        if: ${{ inputs.commit != '' }}
+      - if: ${{ inputs.commit != '' }}
+        name: Check out commit @ ${{ inputs.commit }}
         uses: actions/checkout@v3
         with:
           ref: ${{ inputs.commit }}
-      - name: Check out branch main @ latest commit
-        if: ${{ inputs.commit == '' }}
+      - if: ${{ inputs.commit == '' }}
+        name: Check out branch main @ latest commit
         uses: actions/checkout@v3
         with:
           ref: main
