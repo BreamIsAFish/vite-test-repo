@@ -1,7 +1,6 @@
 name: Pull request check
 on:
   pull_request:
-    branches:
     types: [opened, synchronize]
 
 jobs:
