@@ -13,6 +13,7 @@ function Test() {
   }
   return <span onClick={a}>next</span>
   // return <Link to="/1">Next</Link>;
+  // return <Link to="/1">Next</Link>;
 }
 
 export default Test
