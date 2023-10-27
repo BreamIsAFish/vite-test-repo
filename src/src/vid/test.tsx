@@ -1,5 +1,6 @@
 function Vid() {
   console.log('eririr')
+  console.log('eririr 2')
   return (
     <div>
       {/* <video
