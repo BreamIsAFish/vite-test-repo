@@ -19,6 +19,9 @@ jobs:
           node-version: 20
           cache: 'yarn'
 
+      - name: Clean install
+        run: yarn ci
+
       # - name: Install dependencies
       #   run: yarn
 
