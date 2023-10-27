@@ -18,23 +18,23 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-  #     - name: Lint
-  #       run: yarn lint:fix
+      #     - name: Lint
+      #       run: yarn lint:fix
 
-  #     - name: Test
-  #       run: yarn test
+      #     - name: Test
+      #       run: yarn test
 
-  #     - name: Build
-  #       run: yarn build
+      #     - name: Build
+      #       run: yarn build
 
-  #     - name: Semantic Release (Only branch "main")
-  #       if: github.ref == 'refs/heads/main'
-  #       uses: cycjimmy/semantic-release-action@v3
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-  #   permissions:
-  #     contents: write
-  #     issues: read
+      - name: Semantic Release (Only branch "main")
+        if: github.ref == 'refs/heads/main'
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    permissions:
+      contents: write
+      issues: read
 
   # deploy-dev:
   #   needs: [build]
