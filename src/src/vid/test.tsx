@@ -1,4 +1,5 @@
 function Vid() {
+  console.log('eririr')
   return (
     <div>
       {/* <video
