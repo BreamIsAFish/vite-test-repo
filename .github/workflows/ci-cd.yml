@@ -13,27 +13,25 @@ jobs:
     steps:
       - name: Checkout commit
         uses: actions/checkout@v3
+
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
+
       - name: Lint
         run: yarn lint:fix
 
-  # unit-test:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout commit
-  #       uses: actions/checkout@v3
-  #     - if: steps.cache.outputs.cache-hit != 'true'
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 20
-  #         cache: 'yarn'
-  #     - name: Install dependencies
-  #       if: steps.cache.outputs.cache-hit != 'true'
-  #       run: yarn install --frozen-lockfile
-  #     - name: Test
-  #       run: yarn test
+  unit-test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout commit
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: ./.github/actions/setup-node
+
+      # - name: Test
+      #   run: yarn test
 
   e2e-test:
     needs: [lint]
@@ -42,41 +40,6 @@ jobs:
     steps:
       - name: Checkout commit
         uses: actions/checkout@v3
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
-      # - name: Install dependencies
-      #   run: npm install -g yarn && yarn
-      # - name: Get downloaded dependencies
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: node_modules
-      #     path: node_modules
-
-      # - if: steps.cache.outputs.cache-hit != 'true'
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20
-      #     cache: 'yarn'
-      # - if: steps.cache.outputs.cache-hit != 'true'
-      #   name: Install dependencies
-      #   run: yarn install --frozen-lockfile --ignore-scripts
-
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20
-      #     cache: 'yarn'
-      # - name: Cache dependencies
-      #   id: cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ./node_modules
-      #     key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
-      # - name: Install dependencies
-      #   if: steps.npm-cache.outputs.cache-hit != 'true'
-      #   run: yarn install --frozen-lockfile
 
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
@@ -87,91 +50,92 @@ jobs:
           echo "Playwright's Version: $PLAYWRIGHT_VERSION"
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
-      # - name: Cache Playwright Browsers for Playwright's Version
-      #   id: playwright-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/ms-playwright
-      #     key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: playwright-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright Browsers (--with-deps)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
-      - if: steps.playwright-cache.outputs.cache-hit == 'true'
+      - name: Install Playwright Browsers (install-deps)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps
 
       - name: Run Tests
         run: yarn test:e2e
 
       - name: Store Artifacts from Failed Tests
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: test-results
           path: test-results/
           retention-days: 7
 
-  # semantic-release:
-  #   needs: [unit-test, e2e-test]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout commit
-  #       uses: actions/checkout@v3
-  #     - name: Semantic Release (Only branch "main")
-  #       if: github.ref == 'refs/heads/main'
-  #       uses: cycjimmy/semantic-release-action@v3
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-  #   permissions:
-  #     contents: write
-  #     issues: read
+  semantic-release:
+    needs: [unit-test, e2e-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout commit
+        uses: actions/checkout@v3
+      - name: Semantic Release (Only branch "main")
+        if: github.ref == 'refs/heads/main'
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    permissions:
+      contents: write
+      issues: read
 
-  # deploy-dev:
-  #   needs: [semantic-release]
-  #   if: github.ref == 'refs/heads/dev'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-dev:
+    needs: [semantic-release]
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
+          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-main:
-  #   needs: [semantic-release]
-  #   if: github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-main:
+    needs: [semantic-release]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          URL="${{ secrets.DEPLOY_MAIN_WEBHOOK_URL }}"
+          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-somdet-main:
-  #   needs: [semantic-release]
-  #   if: github.ref == 'refs/heads/corp/somdet/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-corp-somdet-main:
+    needs: [semantic-release]
+    if: github.ref == 'refs/heads/corp/somdet/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
+          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-chula-main:
-  #   needs: [semantic-release]
-  #   if: github.ref == 'refs/heads/corp/chula/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-corp-chula-main:
+    needs: [semantic-release]
+    if: github.ref == 'refs/heads/corp/chula/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
+          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-navy-main:
-  #   needs: [semantic-release]
-  #   if: github.ref == 'refs/heads/corp/navy/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-corp-navy-main:
+    needs: [semantic-release]
+    if: github.ref == 'refs/heads/corp/navy/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
+          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
