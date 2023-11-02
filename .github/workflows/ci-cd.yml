@@ -102,7 +102,7 @@ jobs:
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: Install Playwright Browsers
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
 
       - name: Run Playwright tests
