@@ -100,8 +100,6 @@ jobs:
         with:
           path: "~/.cache/ms-playwright"
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-          restore-keys: |
-            playwright-browsers-
 
       - name: Install Playwright Browsers
         if: steps.npm-cache.outputs.cache-hit != 'true'
