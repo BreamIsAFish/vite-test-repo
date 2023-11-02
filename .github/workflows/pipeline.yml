@@ -1,81 +1,81 @@
-name: CORP Production CI/CD
+# name: CORP Production CI/CD
 
-on:
-  workflow_dispatch:
-    inputs:
-      deploy-branch:
-        type: choice
-        description: 'Branch to deploy'
-        required: true
-        options:
-          - 'corp/somdet/main'
-          - 'corp/chula/main'
-          - 'corp/navy/main'
-      commit:
-        type: string
-        description: 'Commit SHA (Default is latest commit of main branch)'
-        required: false
-        default: ''
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       deploy-branch:
+#         type: choice
+#         description: 'Branch to deploy'
+#         required: true
+#         options:
+#           - 'corp/somdet/main'
+#           - 'corp/chula/main'
+#           - 'corp/navy/main'
+#       commit:
+#         type: string
+#         description: 'Commit SHA (Default is latest commit of main branch)'
+#         required: false
+#         default: ''
 
-run-name: 'Deploy ${{ inputs.deploy-branch }} @ ${{ inputs.commit }} by @${{ github.actor }}'
+# run-name: 'Deploy ${{ inputs.deploy-branch }} @ ${{ inputs.commit }} by @${{ github.actor }}'
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - if: ${{ inputs.commit != '' }}
-        name: Check out commit @ ${{ inputs.commit }}
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.commit }}
-      - if: ${{ inputs.commit == '' }}
-        name: Check out branch main @ latest commit
-        uses: actions/checkout@v3
-        with:
-          ref: main
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - if: ${{ inputs.commit != '' }}
+#         name: Check out commit @ ${{ inputs.commit }}
+#         uses: actions/checkout@v3
+#         with:
+#           ref: ${{ inputs.commit }}
+#       - if: ${{ inputs.commit == '' }}
+#         name: Check out branch main @ latest commit
+#         uses: actions/checkout@v3
+#         with:
+#           ref: main
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
 
-      - name: Install dependencies
-        run: yarn
+#       - name: Install dependencies
+#         run: yarn
 
-      - name: Lint
-        run: yarn lint:fix
+#       - name: Lint
+#         run: yarn lint:fix
 
-      - name: Test
-        run: yarn test
+#       - name: Test
+#         run: yarn test
 
-      - name: Build
-        run: yarn build
+#       - name: Build
+#         run: yarn build
 
-  deploy-corp-somdet-main:
-    needs: [build]
-    if: inputs.deploy-branch == 'corp/somdet/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   deploy-corp-somdet-main:
+#     needs: [build]
+#     if: inputs.deploy-branch == 'corp/somdet/main'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger webhook
+#         run: |
+#           URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
+#           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  deploy-corp-chula-main:
-    needs: [build]
-    if: inputs.deploy-branch == 'corp/chula/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   deploy-corp-chula-main:
+#     needs: [build]
+#     if: inputs.deploy-branch == 'corp/chula/main'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger webhook
+#         run: |
+#           URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
+#           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  deploy-corp-navy-main:
-    needs: [build]
-    if: inputs.deploy-branch == 'corp/navy/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   deploy-corp-navy-main:
+#     needs: [build]
+#     if: inputs.deploy-branch == 'corp/navy/main'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger webhook
+#         run: |
+#           URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
+#           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
