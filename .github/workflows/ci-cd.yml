@@ -19,7 +19,6 @@ jobs:
         run: yarn lint:fix
 
   unit-test:
-    needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Commit
@@ -30,7 +29,6 @@ jobs:
         run: yarn test
 
   e2e-test:
-    needs: [lint]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -49,10 +47,10 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-      - name: Install Playwright Browsers (Cache Hit)
+      - name: Install Playwright Browsers (Cache Miss)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
-      - name: Install Playwright Browsers (Cache Miss)
+      - name: Install Playwright Browsers (Cache Hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: yarn playwright install-deps
       - name: Run E2E Tests
@@ -66,7 +64,7 @@ jobs:
           retention-days: 7
 
   semantic-release:
-    needs: [unit-test, e2e-test]
+    needs: [lint, unit-test, e2e-test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Commit
