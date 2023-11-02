@@ -88,15 +88,17 @@ jobs:
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
       - name: Cache Playwright Browsers for Playwright's Version
-        id: cache-playwright-browsers
+        id: playwright-cache
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
-      - name: Setup Playwright
-        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps
+      - if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
 
       - name: Run Tests
         run: yarn test:e2e
