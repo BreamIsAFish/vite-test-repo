@@ -11,12 +11,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout commit
+      - name: Checkout Commit
         uses: actions/checkout@v3
-
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
-
       - name: Lint
         run: yarn lint:fix
 
@@ -24,51 +22,43 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout commit
+      - name: Checkout Commit
         uses: actions/checkout@v3
-
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
-
-      # - name: Test
-      #   run: yarn test
+      - name: Run Unit Tests
+        run: yarn test
 
   e2e-test:
     needs: [lint]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout commit
+      - name: Checkout Commit
         uses: actions/checkout@v3
-
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
-
-      - name: Store Playwright's Version
+      - name: Store Playwright's Version (Use For Caching)
         run: |
           PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
           echo "Playwright's Version: $PLAYWRIGHT_VERSION"
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-
-      - name: Cache Playwright Browsers for Playwright's Version
+      - name: Cache Playwright Browsers (Using Playwright's Version)
         id: playwright-cache
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-
-      - name: Install Playwright Browsers (--with-deps)
+      - name: Install Playwright Browsers (Cache Hit)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
-      - name: Install Playwright Browsers (install-deps)
+      - name: Install Playwright Browsers (Cache Miss)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
-
-      - name: Run Tests
+        run: yarn playwright install-deps
+      - name: Run E2E Tests
         run: yarn test:e2e
-
-      - name: Store Artifacts from Failed Tests
-        if: always()
+      - name: Store Artifacts From Failed Tests
+        if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: test-results
@@ -79,7 +69,7 @@ jobs:
     needs: [unit-test, e2e-test]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout commit
+      - name: Checkout Commit
         uses: actions/checkout@v3
       - name: Semantic Release (Only branch "main")
         if: github.ref == 'refs/heads/main'
@@ -95,7 +85,7 @@ jobs:
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger webhook
+      - name: Trigger Webhook
         run: |
           URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
@@ -105,7 +95,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger webhook
+      - name: Trigger Webhook
         run: |
           URL="${{ secrets.DEPLOY_MAIN_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
@@ -115,7 +105,7 @@ jobs:
     if: github.ref == 'refs/heads/corp/somdet/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger webhook
+      - name: Trigger Webhook
         run: |
           URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
@@ -125,7 +115,7 @@ jobs:
     if: github.ref == 'refs/heads/corp/chula/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger webhook
+      - name: Trigger Webhook
         run: |
           URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
@@ -135,7 +125,7 @@ jobs:
     if: github.ref == 'refs/heads/corp/navy/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger webhook
+      - name: Trigger Webhook
         run: |
           URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
