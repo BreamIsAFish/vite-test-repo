@@ -1,0 +1,33 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # - yarn install
+        - string=$secrets
+
+        - auth_token="${string#*\"SENTRY_AUTH_TOKEN\":\"}" # Remove everything before the value
+        - auth_token="${auth_token%%\"*}" # Remove everything after the value
+        - dsn="${string#*\"SENTRY_DSN\":\"}" # Remove everything before the value
+        - dsn="${dsn%%\"*}" # Remove everything after the value
+        - gb_client_key="${string#*\"GROWTHBOOK_CLIENT_KEY\":\"}" # Remove everything before the value
+        - gb_client_key="${gb_client_key%%\"*}" # Remove everything after the value
+
+        - echo $auth_token
+        - echo $dsn
+        - echo $gb_client_key
+
+        - export SENTRY_AUTH_TOKEN=$auth_token
+        - export VITE_SENTRY_DSN=$dsn
+        - export VITE_GROWTHBOOK_CLIENT_KEY=$gb_client_key
+    build:
+      commands:
+        # - yarn run build
+
+  artifacts:
+    baseDirectory: dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
