@@ -13,6 +13,10 @@ function App() {
     "VITE_FEATURE_CONFIG",
     JSON.parse(import.meta.env.VITE_FEATURE_CONFIG)
   );
+  console.log(
+    "VITE_FEATURE_CONFIG",
+    JSON.parse(JSON.parse(import.meta.env.VITE_FEATURE_CONFIG))
+  );
 
   return (
     <BrowserRouter>
