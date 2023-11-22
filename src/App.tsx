@@ -8,10 +8,11 @@ import Vid from "./src/vid/test";
 function App() {
   // const [count, setCount] = useState(0)
   // const [count, setCount] = useState(0)
-  const config = import.meta.env.VITE_FEATURE_CONFIG
-    ? JSON.parse(import.meta.env.VITE_FEATURE_CONFIG)
-    : {};
-  console.log("VITE_FEATURE_CONFIG", config);
+  console.log("VITE_FEATURE_CONFIG", import.meta.env.VITE_FEATURE_CONFIG);
+  console.log(
+    "VITE_FEATURE_CONFIG",
+    JSON.parse(import.meta.env.VITE_FEATURE_CONFIG)
+  );
 
   return (
     <BrowserRouter>
