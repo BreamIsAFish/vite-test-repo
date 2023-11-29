@@ -1,11 +1,11 @@
 name: CI/CD
 
 on:
-  push:
-    branches:
-      - dev
-      - main
-      - corp/**/main
+  # push:
+  #   branches:
+  #     - dev
+  #     - main
+  #     - corp/**/main
   workflow_dispatch:
     inputs:
       tag:
