@@ -21,7 +21,7 @@ jobs:
       - name: Checkout Commit
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.tag }}
+          ref: ref/tags/${{ inputs.tag }}
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
       # - name: Lint
