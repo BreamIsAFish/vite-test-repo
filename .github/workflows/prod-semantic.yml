@@ -1,11 +1,9 @@
-name: CI/CD
+name: Production CI
 
 on:
   push:
     branches:
-      - dev
-      - corp/**/main
-      - uat
+      - main
 
 jobs:
   lint:
@@ -63,62 +61,19 @@ jobs:
       #     path: test-results/
       #     retention-days: 7
 
-  deploy-dev:
+  semantic-release:
     needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-somdet-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/somdet/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-chula-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/chula/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-navy-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/navy/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-mdcu-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/mdcu/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_MDCU_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-uat:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/uat'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_UAT_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+      - name: Checkout Commit
+        uses: actions/checkout@v3
+      - name: Setup NodeJS
+        uses: ./.github/actions/setup-node
+      - name: Semantic Release (Only branch "main")
+        if: github.ref == 'refs/heads/main'
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    permissions:
+      contents: write
+      issues: read

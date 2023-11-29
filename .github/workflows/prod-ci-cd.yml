@@ -1,18 +1,22 @@
-name: CI/CD
+name: Production CI/CD
 
 on:
-  push:
-    branches:
-      - dev
-      - corp/**/main
-      - uat
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to deploy e.g. v1.0.0"
+        required: true
+        type: string
 
+run-name: "Deploy Production on tag ${{ inputs.tag }} by @${{ github.actor }}"
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v3
+        with:
+          ref: ref/tags/${{ inputs.tag }}
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
       # - name: Lint
@@ -23,6 +27,8 @@ jobs:
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v3
+        with:
+          ref: ref/tags/${{ inputs.tag }}
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
       # - name: Run Unit Tests
@@ -34,6 +40,8 @@ jobs:
     steps:
       - name: Checkout Commit
         uses: actions/checkout@v3
+        with:
+          ref: ref/tags/${{ inputs.tag }}
       - name: Setup NodeJS
         uses: ./.github/actions/setup-node
       # - name: Store Playwright's Version (Use For Caching)
@@ -63,62 +71,12 @@ jobs:
       #     path: test-results/
       #     retention-days: 7
 
-  deploy-dev:
+  deploy-main:
     needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Webhook
         run: |
-          URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-somdet-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/somdet/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-chula-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/chula/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-navy-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/navy/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-corp-mdcu-main:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/corp/mdcu/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_CORP_MDCU_MAIN_WEBHOOK_URL }}"
-          curl -X POST -d {} "$URL" -H "Content-Type:application/json"
-
-  deploy-uat:
-    needs: [lint, unit-test, e2e-test]
-    if: github.ref == 'refs/heads/uat'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger webhook
-        run: |
-          URL="${{ secrets.DEPLOY_UAT_WEBHOOK_URL }}"
+          URL="${{ secrets.DEPLOY_MAIN_WEBHOOK_URL }}"
           curl -X POST -d {} "$URL" -H "Content-Type:application/json"
