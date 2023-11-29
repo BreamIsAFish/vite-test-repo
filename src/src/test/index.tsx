@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function Test() {
   const navigate = useNavigate();
-  console.log("Test 1");
+  console.log("Test 2");
 
   useEffect(() => {
     return () => console.log("cleaned up");
