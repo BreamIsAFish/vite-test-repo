@@ -25,9 +25,18 @@ function Vid() {
       <h1>{num}</h1>
       <audio
         ref={ref}
-        src="./mock-avatar-audio.mp3"
         onEnded={() => setReady(true)}
-      />
+      >
+        <source
+          src="./mock-avatar-audio.mp3"
+          type="audio/mp3"
+        />
+        <track
+          kind="captions"
+          srcLang="th"
+          label="Thai"
+        />
+      </audio>
       <button onClick={() => ref.current?.play()}>Play audio</button>
       <button
         disabled={!ready}

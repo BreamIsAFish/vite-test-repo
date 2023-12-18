@@ -5,7 +5,10 @@ test.describe("Dmind normal flow (AUDIO method & LOW severity level)", () => {
     await page.goto("/vid", { timeout: 10000 });
     await expect(page.getByText("0")).toBeVisible();
     await expect(page.getByText("Go next")).toBeDisabled();
+    const interviewAudioLocatorQ1 = page.locator("audio").first();
+    await expect(interviewAudioLocatorQ1).toHaveJSProperty("paused", true);
     await page.getByText("Play audio").click();
+    await expect(interviewAudioLocatorQ1).toHaveJSProperty("paused", false);
 
     await page.getByText("Go next").click();
     // await expect(page.getByText("Yay!")).toBeVisible();
