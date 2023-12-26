@@ -47,9 +47,9 @@ jobs:
       #   with:
       #     path: ~/.cache/ms-playwright
       #     key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-      - name: Install Playwright Browsers (Cache Miss)
-        # if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: yarn playwright install --with-deps
+      # - name: Install Playwright Browsers (Cache Miss)
+      #   # if: steps.playwright-cache.outputs.cache-hit != 'true'
+      #   run: yarn playwright install --with-deps
       # - name: Install Playwright Browsers (Cache Hit)
       #   if: steps.playwright-cache.outputs.cache-hit == 'true'
       #   run: yarn playwright install-deps
