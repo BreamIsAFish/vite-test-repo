@@ -56,6 +56,7 @@ jobs:
       - name: Run E2E
         id: test-id
         run: exit 1
+        continue-on-error: true
       - name: YTETSETESS
         if: steps.test-id.outcome == 'failure'
         run: echo riri
