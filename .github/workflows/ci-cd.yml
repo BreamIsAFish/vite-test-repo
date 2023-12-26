@@ -55,7 +55,6 @@ jobs:
       #   run: yarn playwright install-deps
       - name: Run E2E
         id: test-id
-        continue-on-error: true
         run: exit 1
       - name: YTETSETESS
         if: steps.test-id.outcome == 'failure'
@@ -64,15 +63,13 @@ jobs:
         if: steps.test-id.outcome == 'failure'
         run: echo riri
 
-  # deploy-dev:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/dev'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger Webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_DEV_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+  deploy-dev:
+    needs: [e2e-test]
+    # if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Webhook
+        run: echo "Trigger Webhook"
 
   # deploy-corp-somdet-main:
   #   needs: [lint, unit-test, e2e-test]
