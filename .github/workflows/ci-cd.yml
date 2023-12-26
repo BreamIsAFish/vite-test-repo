@@ -56,7 +56,7 @@ jobs:
       - name: Run E2E
         id: test-id
         run: exit 1
-      - name: Store Artifacts From Failed Tests
+      - name: YTETSETESS
         run: echo ${{steps.test-id.outcome}}
 
   # deploy-dev:
