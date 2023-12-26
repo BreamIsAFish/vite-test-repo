@@ -55,14 +55,25 @@ jobs:
       #   run: yarn playwright install-deps
       - name: Run E2E
         id: test-id
-        run: exit 1
         continue-on-error: true
+        run: exit 1
       - name: YTETSETESS
         if: steps.test-id.outcome == 'failure'
-        run: echo riri
-      - name: YTETSETESS_2
-        if: steps.test-id.outcome == 'failure'
-        run: echo riri
+        run: |
+          echo riri
+          mkdir test-results
+          echo riri > test-results/error.log
+          mkdir playwright-report
+          echo riri > playwright-report/error.log
+      - name: Store Artifacts From Failed Tests
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-error-log
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 5
 
   deploy-dev:
     needs: [e2e-test]
