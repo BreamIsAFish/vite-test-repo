@@ -57,7 +57,8 @@ jobs:
         id: test-id
         run: exit 1
       - name: YTETSETESS
-        run: echo ${{steps.test-id.outcome}}
+        if: steps.test-id.outcome == 'failure'
+        run: echo riri
 
   # deploy-dev:
   #   needs: [lint, unit-test, e2e-test]
