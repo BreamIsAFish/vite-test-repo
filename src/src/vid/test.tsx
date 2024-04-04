@@ -1,13 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react'
 
 function Vid() {
-  console.log("eririr");
-  console.log("eririr 2");
+  console.log('eririr')
+  console.log('eririr 2')
 
-  const ref = useRef<HTMLAudioElement>(null);
-  const [num, setNum] = useState(0);
-  const [ready, setReady] = useState(false);
-
+  const ref = useRef<HTMLAudioElement>(null)
+  const [num, setNum] = useState(0)
+  const [ready, setReady] = useState(false)
+  // feature 1
   return (
     <div>
       {/* <video
@@ -41,16 +41,16 @@ function Vid() {
       <button
         disabled={!ready}
         onClick={() => {
-          alert("Yay!");
-          setNum(num + 1);
-          setReady(false);
+          alert('Yay!')
+          setNum(num + 1)
+          setReady(false)
         }}
-        style={{ backgroundColor: ready ? "green" : "red" }}
+        style={{ backgroundColor: ready ? 'green' : 'red' }}
       >
         Go next
       </button>
     </div>
-  );
+  )
 }
 
-export default Vid;
+export default Vid
