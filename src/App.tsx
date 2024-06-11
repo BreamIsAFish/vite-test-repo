@@ -6,8 +6,10 @@ import Test from './src/test'
 import Vid from './src/vid/test'
 
 function App() {
+  console.log('test 4')
   console.log('test 3')
-  console.log('Big')
+  console.log('Big 2')
+  console.log('Big 3')
   // const [count, setCount] = useState(0)
   // const [count, setCount] = useState(0)
 
