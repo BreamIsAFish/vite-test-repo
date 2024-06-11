@@ -1,134 +1,134 @@
-name: CI/CD
+# name: CI/CD
 
-on:
-  push:
-    branches:
-      - "*"
-      # - corp/**/main
-      # - uat
+# on:
+#   push:
+#     branches:
+#       - "*"
+#       # - corp/**/main
+#       # - uat
 
-jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Commit
-  #       uses: actions/checkout@v3
-  #     - name: Setup NodeJS
-  #       uses: ./.github/actions/setup-node
-  #     # - name: Lint
-  #     #   run: yarn lint:fix
+# jobs:
+#   # lint:
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Checkout Commit
+#   #       uses: actions/checkout@v3
+#   #     - name: Setup NodeJS
+#   #       uses: ./.github/actions/setup-node
+#   #     # - name: Lint
+#   #     #   run: yarn lint:fix
 
-  # unit-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Commit
-  #       uses: actions/checkout@v3
-  #     - name: Setup NodeJS
-  #       uses: ./.github/actions/setup-node
-  #     # - name: Run Unit Tests
-  #     #   run: yarn test
+#   # unit-test:
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Checkout Commit
+#   #       uses: actions/checkout@v3
+#   #     - name: Setup NodeJS
+#   #       uses: ./.github/actions/setup-node
+#   #     # - name: Run Unit Tests
+#   #     #   run: yarn test
 
-  e2e-test:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Commit
-        uses: actions/checkout@v3
-      - name: Setup NodeJS
-        uses: ./.github/actions/setup-node
-      # - name: Store Playwright's Version (Use For Caching)
-      #   run: |
-      #     PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
-      #     echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-      #     echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-      # - name: Cache Playwright Browsers (Using Playwright's Version)
-      #   id: playwright-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/ms-playwright
-      #     key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-      # - name: Install Playwright Browsers (Cache Miss)
-      #   # if: steps.playwright-cache.outputs.cache-hit != 'true'
-      #   run: yarn playwright install --with-deps
-      # - name: Install Playwright Browsers (Cache Hit)
-      #   if: steps.playwright-cache.outputs.cache-hit == 'true'
-      #   run: yarn playwright install-deps
-      - name: Run E2E
-        id: test-id
-        # continue-on-error: true
-        run: exit 1
-      # - name: YTETSETESS
-      #   if: steps.test-id.outcome == 'failure'
-      #   run: |
-      #     echo riri
-      #     mkdir test-results
-      #     echo riri > test-results/error.log
-      #     mkdir playwright-report
-      #     echo riri > playwright-report/error.log
-      - name: Store Artifacts From Failed Tests
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: e2e-error-log
-          path: |
-            test-results/
-            playwright-report/
-          retention-days: 5
+#   e2e-test:
+#     timeout-minutes: 10
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Commit
+#         uses: actions/checkout@v3
+#       - name: Setup NodeJS
+#         uses: ./.github/actions/setup-node
+#       # - name: Store Playwright's Version (Use For Caching)
+#       #   run: |
+#       #     PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
+#       #     echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+#       #     echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+#       # - name: Cache Playwright Browsers (Using Playwright's Version)
+#       #   id: playwright-cache
+#       #   uses: actions/cache@v3
+#       #   with:
+#       #     path: ~/.cache/ms-playwright
+#       #     key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+#       # - name: Install Playwright Browsers (Cache Miss)
+#       #   # if: steps.playwright-cache.outputs.cache-hit != 'true'
+#       #   run: yarn playwright install --with-deps
+#       # - name: Install Playwright Browsers (Cache Hit)
+#       #   if: steps.playwright-cache.outputs.cache-hit == 'true'
+#       #   run: yarn playwright install-deps
+#       - name: Run E2E
+#         id: test-id
+#         # continue-on-error: true
+#         run: exit 1
+#       # - name: YTETSETESS
+#       #   if: steps.test-id.outcome == 'failure'
+#       #   run: |
+#       #     echo riri
+#       #     mkdir test-results
+#       #     echo riri > test-results/error.log
+#       #     mkdir playwright-report
+#       #     echo riri > playwright-report/error.log
+#       - name: Store Artifacts From Failed Tests
+#         if: failure()
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: e2e-error-log
+#           path: |
+#             test-results/
+#             playwright-report/
+#           retention-days: 5
 
-  deploy-dev:
-    needs: [e2e-test]
-    # if: github.ref == 'refs/heads/dev'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Webhook
-        run: echo "Trigger Webhook"
+#   deploy-dev:
+#     needs: [e2e-test]
+#     # if: github.ref == 'refs/heads/dev'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger Webhook
+#         run: echo "Trigger Webhook"
 
-  # deploy-corp-somdet-main:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/corp/somdet/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger Webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   # deploy-corp-somdet-main:
+#   #   needs: [lint, unit-test, e2e-test]
+#   #   if: github.ref == 'refs/heads/corp/somdet/main'
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Trigger Webhook
+#   #       run: |
+#   #         URL="${{ secrets.DEPLOY_CORP_SOMDET_MAIN_WEBHOOK_URL }}"
+#   #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-chula-main:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/corp/chula/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger Webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   # deploy-corp-chula-main:
+#   #   needs: [lint, unit-test, e2e-test]
+#   #   if: github.ref == 'refs/heads/corp/chula/main'
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Trigger Webhook
+#   #       run: |
+#   #         URL="${{ secrets.DEPLOY_CORP_CHULA_MAIN_WEBHOOK_URL }}"
+#   #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-navy-main:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/corp/navy/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger Webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   # deploy-corp-navy-main:
+#   #   needs: [lint, unit-test, e2e-test]
+#   #   if: github.ref == 'refs/heads/corp/navy/main'
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Trigger Webhook
+#   #       run: |
+#   #         URL="${{ secrets.DEPLOY_CORP_NAVY_MAIN_WEBHOOK_URL }}"
+#   #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-corp-mdcu-main:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/corp/mdcu/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_CORP_MDCU_MAIN_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   # deploy-corp-mdcu-main:
+#   #   needs: [lint, unit-test, e2e-test]
+#   #   if: github.ref == 'refs/heads/corp/mdcu/main'
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Trigger webhook
+#   #       run: |
+#   #         URL="${{ secrets.DEPLOY_CORP_MDCU_MAIN_WEBHOOK_URL }}"
+#   #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
 
-  # deploy-uat:
-  #   needs: [lint, unit-test, e2e-test]
-  #   if: github.ref == 'refs/heads/uat'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger webhook
-  #       run: |
-  #         URL="${{ secrets.DEPLOY_UAT_WEBHOOK_URL }}"
-  #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
+#   # deploy-uat:
+#   #   needs: [lint, unit-test, e2e-test]
+#   #   if: github.ref == 'refs/heads/uat'
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Trigger webhook
+#   #       run: |
+#   #         URL="${{ secrets.DEPLOY_UAT_WEBHOOK_URL }}"
+#   #         curl -X POST -d {} "$URL" -H "Content-Type:application/json"
