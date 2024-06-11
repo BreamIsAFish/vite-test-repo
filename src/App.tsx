@@ -6,6 +6,7 @@ import Test from './src/test'
 import Vid from './src/vid/test'
 
 function App() {
+  console.log('test')
   // const [count, setCount] = useState(0)
   // const [count, setCount] = useState(0)
 
