@@ -12,7 +12,6 @@ function App() {
   console.log('Big 3')
   console.log('Big 4')
   console.log('Big 5')
-  console.log('Big 6')
   // const [count, setCount] = useState(0)
   // const [count, setCount] = useState(0)
 
