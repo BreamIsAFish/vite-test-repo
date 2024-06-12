@@ -6,8 +6,8 @@
   plugins:
     [
       '@semantic-release/npm',
-      '@semantic-release/git',
       '@semantic-release/changelog',
+      '@semantic-release/git',
     ],
 }
 # branches:
