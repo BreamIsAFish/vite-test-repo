@@ -1,70 +1,12 @@
 {
-  branches: [main],
-  # repositoryUrl:
-  # plugins:
-  # dryRun: true
-  plugins:
-    [
-      # '@semantic-release/commit-analyzer',
-      '@semantic-release/release-notes-generator',
-      '@semantic-release/changelog',
-      ['@semantic-release/npm', {
-
-      }],
-      '@semantic-release/git',
-      '@semantic-release/github'
-    ],
+  "branches": [
+    "main"
+  ],
+  "plugins": [
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    "@semantic-release/npm",
+    "@semantic-release/git",
+    "@semantic-release/github"
+  ]
 }
-# branches:
-#   # - +([0-9])?(.{+([0-9]),x).x}
-#   - main
-# # repositoryUrl:
-# # plugins:
-# # dryRun: true
-# plugins:
-#   - '@semantic-release/npm'
-#   - '@semantic-release/git'
-#   - '@semantic-release/changelog'
-
-# module.exports = {
-#   branches: ['main'],
-#   plugins: [
-#     [
-#       '@semantic-release/commit-analyzer',
-#       {
-#         preset: 'conventionalcommits',
-#       },
-#     ],
-#     [
-#       '@semantic-release/release-notes-generator',
-#       {
-#         preset: 'conventionalcommits',
-#       },
-#     ],
-#     '@semantic-release/changelog',
-#     '@semantic-release/github',
-#     [
-#       '@semantic-release/npm',
-#       {
-#         npmPublish: false,
-#       },
-#     ],
-#     '@semantic-release/git',
-#   ],
-#   release: {
-#     prepare: [
-#       [
-#         '@semantic-release/changelog',
-#         {
-#           changelogFile: 'CHANGELOG.md',
-#         },
-#       ],
-#       '@semantic-release/npm',
-#       {
-#         path: '@semantic-release/git',
-#         assets: ['package.json', 'package-lock.json', 'CHANGELOG.md'],
-#         message: 'chore(release): ${nextRelease.version} \n\n${nextRelease.notes}',
-#       },
-#     ],
-#   },
-# }
