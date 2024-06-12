@@ -7,6 +7,7 @@ branches:
 plugins:
   - '@semantic-release/npm'
   - '@semantic-release/git'
+  - '@semantic-release/changelog'
 # module.exports = {
 #   branches: ['main'],
 #   plugins: [
