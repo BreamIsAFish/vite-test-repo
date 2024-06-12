@@ -1,3 +1,10 @@
+## [5.1.12](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.11...v5.1.12) (2024-06-12)
+
+
+### Bug Fixes
+
+* chlog 11 ([beeef55](https://github.com/BreamIsAFish/vite-test-repo/commit/beeef552b7385b25145b7f8789082e795bce5852))
+
 ## [5.1.11](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.10...v5.1.11) (2024-06-12)
 
 
