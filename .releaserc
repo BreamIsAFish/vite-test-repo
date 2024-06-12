@@ -5,9 +5,10 @@
   # dryRun: true
   plugins:
     [
-      ['@semantic-release/changelog', { 'changelogFile': 'CHANGELOG.md' }],
+      '@semantic-release/notes-generator',
+      '@semantic-release/changelog',
       '@semantic-release/npm',
-      ['@semantic-release/git', { 'assets': ['package.json', 'CHANGELOG.md'] }],
+      '@semantic-release/git',
     ],
 }
 # branches:
