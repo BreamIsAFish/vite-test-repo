@@ -1,3 +1,12 @@
+## [5.1.16](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.15...v5.1.16) (2024-06-12)
+
+
+### Bug Fixes
+
+* seman 1 ([0608fcf](https://github.com/BreamIsAFish/vite-test-repo/commit/0608fcf771263d01b312da9b4f83fa1bf0123f48))
+* seman 2 ([50c0bfc](https://github.com/BreamIsAFish/vite-test-repo/commit/50c0bfc9bbe5d31662a0b3c0e02b1906c99f442b))
+* seman 3 ([236ef61](https://github.com/BreamIsAFish/vite-test-repo/commit/236ef617bf2befd1d6254c3a097199dc71fb36e3))
+
 ## [5.1.15](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.14...v5.1.15) (2024-06-12)
 
 
