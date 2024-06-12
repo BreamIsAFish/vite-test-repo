@@ -1,13 +1,26 @@
-branches:
-  # - +([0-9])?(.{+([0-9]),x).x}
-  - main
-# repositoryUrl:
+{
+  branches: [main],
+  # repositoryUrl:
+  # plugins:
+  # dryRun: true
+  plugins:
+    [
+      '@semantic-release/npm',
+      '@semantic-release/git',
+      '@semantic-release/changelog',
+    ],
+}
+# branches:
+#   # - +([0-9])?(.{+([0-9]),x).x}
+#   - main
+# # repositoryUrl:
+# # plugins:
+# # dryRun: true
 # plugins:
-# dryRun: true
-plugins:
-  - '@semantic-release/npm'
-  - '@semantic-release/git'
-  - '@semantic-release/changelog'
+#   - '@semantic-release/npm'
+#   - '@semantic-release/git'
+#   - '@semantic-release/changelog'
+
 # module.exports = {
 #   branches: ['main'],
 #   plugins: [
