@@ -11,16 +11,16 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
+        cache: 'pnpm'
     - name: Cache dependencies
       id: cache
       uses: actions/cache@v4
       with:
         path: ./node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('pnpm.lock') }}
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Install dependencies
       if: steps.npm-cache.outputs.cache-hit != 'true'
-      run: yarn install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
       shell: bash
