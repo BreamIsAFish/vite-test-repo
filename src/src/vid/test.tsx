@@ -8,6 +8,7 @@ function Vid() {
   const [num, setNum] = useState(0)
   const [ready, setReady] = useState(false)
   // feature 1
+  // feature 2
   return (
     <div>
       {/* <video
