@@ -1,3 +1,10 @@
+## [5.1.18](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.17...v5.1.18) (2024-11-01)
+
+
+### Bug Fixes
+
+* do some s*t ([e0d4a2f](https://github.com/BreamIsAFish/vite-test-repo/commit/e0d4a2f4c2a99126f20112e89b57cb6bf1506b0c))
+
 ## [5.1.17](https://github.com/BreamIsAFish/vite-test-repo/compare/v5.1.16...v5.1.17) (2024-06-12)
 
 
